@@ -138,7 +138,7 @@ const SignUpCard = () => {
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
-              Don't have an account?{" "}
+              No account yet ?{" "}
               <Link href="/signup" className="underline">
                 Sign up
               </Link>
