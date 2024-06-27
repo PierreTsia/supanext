@@ -11,7 +11,7 @@ export default async function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-y-6">
+    <main className="flex h-full flex-col items-center justify-center gap-y-6">
       <h1 className="inline-flex text-xl  tracking-tight lg:text-2xl">
         Welcome back
         <p className="text-indigo-400 font-bold pl-3">{data.user.email} </p>

@@ -10,7 +10,7 @@ const SignUpPage = async () => {
     redirect("/");
   }
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-24">
+    <div className="flex  flex-col items-center justify-center p-24">
       <SignUpCard />
     </div>
   );
