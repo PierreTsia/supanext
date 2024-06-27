@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import LogoutBtn from "@/components/auth/LogoutBtn";
 
 export default async function Home() {
   const supabase = createClient();
@@ -10,8 +11,12 @@ export default async function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <p>Hello {data.user.email}</p>;
+    <main className="flex min-h-screen flex-col items-center justify-center gap-y-6">
+      <h1 className="inline-flex text-xl  tracking-tight lg:text-2xl">
+        Welcome back
+        <p className="text-indigo-400 font-bold pl-3">{data.user.email} </p>
+      </h1>
+      <LogoutBtn />
     </main>
   );
 }

@@ -1,28 +1,10 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import Link from "next/link";
-import { useForm, SubmitHandler } from "react-hook-form";
 import { login } from "@/app/login/actions";
+import AuthForm from "./AuthForm";
+import Link from "next/link";
+import { useState } from "react";
 
 const LoginCard = () => {
   const loginFormSchema = z.object({
@@ -37,94 +19,53 @@ const LoginCard = () => {
       ),
   });
 
-  const loginForm = useForm<z.infer<typeof loginFormSchema>>({
-    resolver: zodResolver(loginFormSchema),
-    defaultValues: {
-      email: "",
-      password: "",
+  const defaultValues = {
+    email: "",
+    password: "",
+  };
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
+    await login(data);
+    setIsSubmitting(false);
+  };
+
+  const fields = [
+    {
+      name: "email",
+      label: "Email",
+      placeholder: "john@email.com",
+      autoComplete: "email",
     },
-  });
-
-  const onSubmit: SubmitHandler<z.infer<typeof loginFormSchema>> = (data) =>
-    login(data);
-
-  const {
-    handleSubmit,
-    formState: { errors },
-  } = loginForm;
+    {
+      name: "password",
+      label: "Password",
+      placeholder: "******",
+      type: "password",
+      autoComplete: "current-password",
+      description: (
+        <Link href="/forgot-password" className="underline">
+          Forgot your password?
+        </Link>
+      ),
+    },
+  ];
 
   return (
-    <Form {...loginForm}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Card className="mx-auto max-w-sm">
-          <CardHeader>
-            <CardTitle className="text-2xl">Login</CardTitle>
-            <CardDescription>
-              Enter your email below to login to your account
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4">
-              <div className="grid gap-2">
-                <FormField
-                  control={loginForm.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input placeholder="john@email.com" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        Enter your email address
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="grid gap-2">
-                <FormField
-                  control={loginForm.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="******"
-                          type="password"
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        <Link href="/forgot-password" className="underline">
-                          Forgot your password?
-                        </Link>
-                      </FormDescription>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <Button type="submit" className="w-full">
-                Login
-              </Button>
-              <Button variant="outline" className="w-full">
-                Login with Google
-              </Button>
-            </div>
-            <div className="mt-4 text-center text-sm">
-              No account yet ?{" "}
-              <Link href="/signup" className="underline">
-                Sign up
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
-      </form>
-    </Form>
+    <AuthForm
+      formSchema={loginFormSchema}
+      defaultValues={defaultValues}
+      onSubmit={onSubmit}
+      isSubmitting={isSubmitting}
+      title="Login"
+      description="Enter your email below to login to your account"
+      fields={fields}
+      footerText="No account yet?"
+      footerLink="/signup"
+      footerLinkText="Sign up"
+    />
   );
 };
 
