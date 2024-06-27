@@ -19,8 +19,32 @@ import {
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import SubmitBtn from "@/components/auth/SubmitBtn";
+import { LoginFormType } from "@/components/auth/LoginCard";
+import { SignUpFormType } from "@/components/auth/SignUpCard";
+
+type AuthFormProps = {
+  formSchema: LoginFormType | SignUpFormType;
+  defaultValues: LoginFormType | SignUpFormType;
+  onSubmit: SubmitHandler<LoginFormType | SignUpFormType>;
+  isSubmitting: boolean;
+  title: string;
+  description: string;
+  fields: AuthFormField[];
+  footerLink: string;
+  footerLinkText: string;
+  footerText: string;
+};
+
+type AuthFormField = {
+  name: string;
+  label: string;
+  placeholder: string;
+  type?: string;
+  autoComplete?: string;
+  description?: string;
+};
 
 const AuthForm = ({
   formSchema,
@@ -33,7 +57,7 @@ const AuthForm = ({
   footerLink,
   footerLinkText,
   footerText,
-}) => {
+}: AuthFormProps) => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues,

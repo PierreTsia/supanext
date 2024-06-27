@@ -5,56 +5,57 @@ import { signup } from "@/app/signup/actions";
 import AuthForm from "./AuthForm";
 import { useState } from "react";
 
+const defaultValues = {
+  email: "",
+  password: "",
+  confirm_password: "",
+};
+
+const signUpFormSchema = z
+  .object({
+    email: z.string().email(),
+    password: z
+      .string()
+      .min(8, "The password must be at least 8 characters long")
+      .max(32, "The password must be a maximum 32 characters")
+      .regex(
+        /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
+        "Password must have at least one number, one uppercase letter, one lowercase letter, and one special character"
+      ),
+    confirm_password: z.string(),
+  })
+  .refine((data) => data.password === data.confirm_password, {
+    message: "Passwords don't match",
+    path: ["confirm_password"],
+  });
+export type SignUpFormType = z.infer<typeof defaultValues>;
+
+const fields = [
+  {
+    name: "email",
+    label: "Email",
+    placeholder: "john@email.com",
+    autoComplete: "email",
+  },
+  {
+    name: "password",
+    label: "Password",
+    placeholder: "******",
+    type: "password",
+    autoComplete: "new-password",
+    description: "Set your password",
+  },
+  {
+    name: "confirm_password",
+    label: "Confirm Password",
+    autoComplete: "new-password",
+    placeholder: "******",
+    type: "password",
+  },
+];
+
 const SignUpCard = () => {
-  const signUpFormSchema = z
-    .object({
-      email: z.string().email(),
-      password: z
-        .string()
-        .min(8, "The password must be at least 8 characters long")
-        .max(32, "The password must be a maximum 32 characters")
-        .regex(
-          /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
-          "Password must have at least one number, one uppercase letter, one lowercase letter, and one special character"
-        ),
-      confirm_password: z.string(),
-    })
-    .refine((data) => data.password === data.confirm_password, {
-      message: "Passwords don't match",
-      path: ["confirm_password"],
-    });
-
-  const defaultValues = {
-    email: "",
-    password: "",
-    confirm_password: "",
-  };
-
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const fields = [
-    {
-      name: "email",
-      label: "Email",
-      placeholder: "john@email.com",
-      autoComplete: "email",
-    },
-    {
-      name: "password",
-      label: "Password",
-      placeholder: "******",
-      type: "password",
-      autoComplete: "new-password",
-      description: "Set your password",
-    },
-    {
-      name: "confirm_password",
-      label: "Confirm Password",
-      autoComplete: "new-password",
-      placeholder: "******",
-      type: "password",
-    },
-  ];
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
